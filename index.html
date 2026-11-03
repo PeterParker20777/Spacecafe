@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Explore the Space Cafe menu — coffee, drinks, desserts and food.">
+  <title>Space Cafe | Menu</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <button class="icon-button" id="menuButton" aria-label="Scroll to menu">☰</button>
+
+    <a class="brand" href="#home" aria-label="Space Cafe home">
+      <img src="assets/space-cafe-logo.png" alt="Space Cafe logo">
+    </a>
+
+    <a class="icon-button cup-icon" href="#menu" aria-label="View menu">☕</a>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <span class="eyebrow">WELCOME TO</span>
+        <h1>Space Cafe</h1>
+        <p>Good Food .. Good Mood</p>
+        <span class="hero-line"></span>
+      </div>
+
+      <img
+        class="hero-image"
+        src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=1000&q=85"
+        alt="Iced coffee in a glass"
+      >
+    </section>
+
+    <section class="menu-section" id="menu">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">WHAT WOULD YOU LIKE?</span>
+          <h2>Our Menu</h2>
+        </div>
+      </div>
+
+      <nav class="categories" aria-label="Menu categories">
+        <button class="category active" data-category="Coffee">☕ <span>Coffee</span></button>
+        <button class="category" data-category="Drinks">🥤 <span>Drinks</span></button>
+        <button class="category" data-category="Desserts">🍰 <span>Desserts</span></button>
+        <button class="category" data-category="Food">🍴 <span>Food</span></button>
+      </nav>
+
+      <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="review-section">
+      <div class="review-card">
+        <div class="review-icon">♥</div>
+
+        <h2>Enjoyed Your Visit?</h2>
+        <p>Your opinion means a lot to us. Leave a review on Google!</p>
+
+        <div class="stars" aria-label="5 stars">★★★★★</div>
+
+        <div class="review-actions">
+          <a
+            class="secondary-button"
+            href="https://www.google.com/maps/place/Space+cafe/@30.678334,31.6010122,187m/data=!3m2!1e3!4b1!4m6!3m5!1s0x14f7f50066ae4163:0x423a6e11be603869!8m2!3d30.678334!4d31.6003685!16s%2Fg%2F11wp1d0m7m"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Rate Us on Google <span>↗</span>
+          </a>
+        </div>
+
+        <small>Choose Reviews to leave your feedback.</small>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="assets/space-cafe-logo.png" alt="Space Cafe logo">
+    <p>Enjoy Your Time ♥</p>
+    <span>© <span id="year"></span> Space Cafe</span>
+  </footer>
+
+  <footer class="made-by">
+    Made By PeterParker 🕷️
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
