@@ -240,44 +240,74 @@ const menuItems = [
 
 const menuGrid = document.getElementById('menuGrid');
 const categoryButtons = document.querySelectorAll('.category');
-
 const fallbackImage = 'assets/menu-fallback.svg';
+const DEFAULT_CATEGORY = 'Coffee';
+
+// Escape text so menu data can never break the page markup
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+}
 
 function renderMenu(category) {
     if (!menuGrid) return;
 
     const items = menuItems.filter(item => item.category === category);
 
-    menuGrid.innerHTML = items.map(item => `
-        <article class="menu-item">
+    menuGrid.innerHTML = items.map((item, index) => `
+        <article class="menu-item" style="--i:${index}">
             <img
-                src="${item.image}"
-                alt="${item.name}"
+                src="${escapeHTML(item.image)}"
+                alt="${escapeHTML(item.name)}"
+                width="142"
+                height="136"
                 loading="lazy"
-                onerror="this.onerror=null; this.src='${fallbackImage}'"
+                decoding="async"
             >
 
             <div class="item-info">
-                <h3>${item.name}</h3>
-                <p>${item.description}</p>
-                <span class="price">${item.price} EGP</span>
+                <h3>${escapeHTML(item.name)}</h3>
+                <p>${escapeHTML(item.description)}</p>
+                <span class="price">${escapeHTML(item.price)} EGP</span>
             </div>
         </article>
     `).join('');
+
+    // Image states: stop shimmer on load, use fallback on error
+    menuGrid.querySelectorAll('img').forEach(img => {
+        const done = () => img.classList.add('loaded');
+        img.addEventListener('load', done, { once: true });
+        img.addEventListener('error', () => {
+            img.src = fallbackImage;
+            done();
+        }, { once: true });
+        if (img.complete && img.naturalWidth) done();
+    });
+}
+
+function setActiveCategory(category, updateHash = true) {
+    const valid = [...categoryButtons].some(b => b.dataset.category === category);
+    if (!valid) category = DEFAULT_CATEGORY;
+
+    categoryButtons.forEach(button => {
+        const isActive = button.dataset.category === category;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-selected', String(isActive));
+        if (isActive) {
+            button.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+        }
+    });
+
+    renderMenu(category);
+    if (updateHash) history.replaceState(null, '', '#' + category.toLowerCase());
 }
 
 
 // ================= CATEGORY BUTTONS =================
 
 categoryButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        categoryButtons.forEach(item => {
-            item.classList.remove('active');
-        });
-
-        button.classList.add('active');
-        renderMenu(button.dataset.category);
-    });
+    button.addEventListener('click', () => setActiveCategory(button.dataset.category));
 });
 
 
@@ -288,25 +318,42 @@ const menuButton = document.getElementById('menuButton');
 if (menuButton) {
     menuButton.addEventListener('click', () => {
         const menuSection = document.getElementById('menu');
-
-        if (menuSection) {
-            menuSection.scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
+        if (menuSection) menuSection.scrollIntoView({ behavior: 'smooth' });
     });
+}
+
+
+// ================= TOPBAR + BACK TO TOP =================
+
+const topbar = document.querySelector('.topbar');
+const toTop = document.getElementById('toTop');
+
+function onScroll() {
+    const y = window.scrollY;
+    if (topbar) topbar.classList.toggle('scrolled', y > 10);
+    if (toTop) toTop.classList.toggle('show', y > 600);
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+if (toTop) {
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
 
 // ================= FOOTER YEAR =================
 
 const yearElement = document.getElementById('year');
-
-if (yearElement) {
-    yearElement.textContent = new Date().getFullYear();
-}
+if (yearElement) yearElement.textContent = new Date().getFullYear();
 
 
 // ================= INITIAL MENU =================
+// Opening /#desserts (e.g. from a QR code) jumps straight to that category
 
-renderMenu('Coffee');
+const hashCategory = location.hash.replace('#', '');
+const initial = [...categoryButtons]
+    .map(b => b.dataset.category)
+    .find(name => name.toLowerCase() === hashCategory.toLowerCase());
+
+setActiveCategory(initial || DEFAULT_CATEGORY, false);
